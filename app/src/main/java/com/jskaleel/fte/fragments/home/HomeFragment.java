@@ -188,7 +188,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         }).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);*/
 
-        DownloadManager.Request requestVideo = new DownloadManager.Request(Uri.parse(bookItem.getEpub()));
+        DownloadManager.Request requestVideo;
+        try {
+            requestVideo = new DownloadManager.Request(Uri.parse(bookItem.getPdf()));
+            requestVideo.setDestinationUri(Uri.parse("file://" + DeviceUtils.getStorageLocation() + "/" + bookItem.getTitle() + ".pdf"));
+        } catch (IllegalArgumentException e){
+            requestVideo = new DownloadManager.Request(Uri.parse(bookItem.getEpub()));
+            requestVideo.setDestinationUri(Uri.parse("file://" + DeviceUtils.getStorageLocation() + "/" + bookItem.getTitle() + ".epub"));
+        }
         requestVideo.setDestinationUri(Uri.parse("file://" + DeviceUtils.getStorageLocation() + "/" + bookItem.getTitle() + ".epub"));
         requestVideo.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
         requestVideo.setAllowedOverRoaming(true);
